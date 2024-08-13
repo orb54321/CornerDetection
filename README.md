@@ -11,3 +11,5 @@ Different methods for corner detection in image processing
 输出：
 
 ![output](harris/data/output/harris_corner3.jpg)
+
+## 2. [FAST corner detection](FAST/fast_doc/README.md)
