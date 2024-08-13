@@ -4,7 +4,7 @@
 - 使用圆形模板，通过模板中心的像素与模板上的像素的偏离程度来判断该点是否为角点
 对于中心位置的像素，取半径为3的圆，圆会经过16个像素，这16个像素的坐标记录为row_coord_on_circle，col_coord_on_circle。
 
-![alt text](/fast_doc/角点检测.png)
+![角点检测](/fast_doc/角点检测.png)
 
 设置阈值threshold，如果圆周上16个像素点中有连续N个点，其**像素值与中心位置的像素值之差大于threshold（或小于-threshold）**，则认为该中心点为角点
 条件1：像素值与中心位置的像素值之差大于threshold
