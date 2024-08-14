@@ -22,6 +22,3 @@ Different methods for corner detection in image processing
 <img  src="FAST/data/output/fast_corner_with_nms.jpg" width="200" /> 
 
 Harris中的的每个角点由较多像素组成，因此清晰可见，而FAST检测出的角点由较少像素组成，角点较小，图片放大后才能看见，经过对比，可以看到FAST检测出的结果并没有Harris那么精确，它保留了很多不该保留的检测角点，且有许多角点并未识别出
-
-
-
