@@ -21,10 +21,11 @@ def FastCornerDetect(input, threshold):
             data_center = img[row, col]
             condition1 = ((data_center - data_on_circle) > threshold).astype(int)  # 中间点大于周围点，为1
             condition2 = ((data_on_circle - data_center) < threshold).astype(int)  # 中间点小于周围点，为1
-            if condition1[0] + condition1[8] >= 1 and condition1[4] + condition1[12] >= 1:
+            # if condition1[0] + condition1[8] >= 1 and condition1[4] + condition1[12] >= 1:
+            if (condition1[0] >= 1 or condition1[8] >= 1) and (condition1[4] >= 1 or condition1[12] >= 1):
                 cond1 = condition1.copy()
-                cond1 = np.concatenate((cond1, cond1[0: N - 1]), axis=0)  # 拼接，cond1中最后一个像素也需要进行判断，所以给他后面加了八个像素，使得可以判断圆周上是否有连续N个点，其像素值与中心位置像素值之差大于t（或小于-t）
-                cond1_str = ''.join(str(i) for i in cond1)
+                cond1 = np.concatenate((cond1, cond1[0: N - 1]), axis=0)  # 拼接，cond1中最后一个像素也需要进行判断，所以给它后面加了八个像素，使得可以判断圆周上是否有连续N个点，其像素值与中心位置像素值之差大于t（或小于-t）
+                cond1_str = ' '.join(str(i) for i in cond1)
                 cond1_str = cond1_str.replace('0', ' ')
                 cond1_str = cond1_str.split()
                 cond1_len = np.array([len(j) for j in cond1_str])
@@ -32,7 +33,8 @@ def FastCornerDetect(input, threshold):
                     score = np.sum(np.abs(data_center-data_on_circle))
                     score_array[row, col] = score
                     continue
-            if condition2[0] + condition2[8] >= 1 and condition2[4] + condition2[12] >= 1:
+            # if condition2[0] + condition2[8] >= 1 and condition2[4] + condition2[12] >= 1:
+            if (condition1[0] >= 1 or condition1[8] >= 1) and (condition1[4] >= 1 or condition1[12] >= 1):
                 cond2 = condition2.copy()
                 cond2 = np.concatenate((cond2, cond2[0: N - 1]), axis=0)
                 cond2_str = ''.join(str(i) for i in cond2)
@@ -63,21 +65,24 @@ def nms(score_array, kernel = 3):
     return out
 
 def main():
-    img = cv2.imread('./data/input2.jpg', cv2.IMREAD_GRAYSCALE)
-    img = cv2.resize(img, (256, 256))
-    score_array = FastCornerDetect(img, 200)
-    img_show = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-    img_show[score_array > 0] = [0, 0, 255]
+    img = cv2.imread('./data/input/input3.jpg', cv2.IMREAD_GRAYSCALE)
+    # img = cv2.resize(img, (256, 256))
+    score_array = FastCornerDetect(img, 50)
+    img_without_nms = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    img_without_nms[score_array > 0] = [0, 0, 255]
     plt.figure()
     plt.title('FAST corner detection')
-    plt.imshow(img_show)
+    cv2.imwrite('./data/output/fast_corner_without_nms.jpg', img_without_nms)
+    plt.imshow(img_without_nms)
 
     out = nms(score_array)
-    img_show1 = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-    img_show1[out > 0] = [0, 0, 255]
+    print(out)
+    img_with_nms = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    img_with_nms[out > 0] = [0, 0, 255]
     plt.figure()
     plt.title('FAST corner detection after NMS')
-    plt.imshow(img_show1, cmap='gray')
+    plt.imshow(img_with_nms, cmap='gray')
+    cv2.imwrite('./data/output/fast_corner_with_nms.jpg', img_with_nms)
     plt.show()
 
 if __name__ == '__main__':
